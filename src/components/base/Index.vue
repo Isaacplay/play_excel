@@ -128,18 +128,17 @@
         this.step = 2;
       },
       step3Action(){
-        let list = [];
+        let list = this.normal_list;
         if(this.nodate_list.length > 0){
           for(let i in this.nodate_list){
             this.nodate_list[i]['__EMPTY_3'] = this.dataTime
           }
-          list = this.normal_list.concat(this.nodate_list)
+          list = list.concat(this.nodate_list)
         }
         let locationMap = {};
         list.forEach((item)=>{
           let location = (item['__EMPTY_5'] || item['__EMPTY_6'] || item['__EMPTY_7']).replace('市','').replace('区','').replace('县','').replace('村','').replace('镇','')
           if(locationMap.hasOwnProperty(location)){
-            console.log(locationMap[location])
             locationMap[location].list.push(item)
           }else{
             locationMap[location] = {};
@@ -167,10 +166,52 @@
           })
           list = list.concat(locationMap[i].list)
         }
+        let key = {
+          '崇川区公安大数据核查情况明细表':'序号',
+          '__EMPTY':'姓 名',
+          '__EMPTY_1':'身份证  号码',
+          '__EMPTY_2':'联系电话',
+          '__EMPTY_3':'离开风险地时间',
+          '__EMPTY_4':'核酸检测结果（1、阴性；2、未检）',
+          '__EMPTY_5':'中高风险    地区',
+          '__EMPTY_6':'中高风险   地区所在     地设区市',
+          '__EMPTY_7':'重点管控      地区',
+          '__EMPTY_8':'集中       隔离',
+          '__EMPTY_9':'居家      健康   监测',
+          '__EMPTY_10':'严格   健康   监测',
+          '__EMPTY_11':'自我   健康   监测',
+          '__EMPTY_12':'自由      通行',
+          '__EMPTY_13':'备注',
+          '__EMPTY_14':'所属   街道',
+          '__EMPTY_15':'在通住址',
+          '__EMPTY_16':'接收       数据      时间',
+          '__EMPTY_17':'完成      核查    时间',
+          '__EMPTY_18':'返通方式',
+          '__EMPTY_19':'同行人员及联系方式',
+          '__EMPTY_20':' ',
+          '__EMPTY_21':' ',
+          '__EMPTY_22':' ',
+        }
+        const header = ["崇川区公安大数据核查情况明细表", "__EMPTY","__EMPTY_1","__EMPTY_2","__EMPTY_3","__EMPTY_4","__EMPTY_5",
+        "__EMPTY_6","__EMPTY_7","__EMPTY_8","__EMPTY_9","__EMPTY_10","__EMPTY_11","__EMPTY_12","__EMPTY_13","__EMPTY_14","__EMPTY_15",
+        "__EMPTY_16","__EMPTY_17","__EMPTY_18","__EMPTY_19","__EMPTY_20","__EMPTY_21","__EMPTY_22"];
+        const newData = [key, ...list];
+        var compare = function (obj1, obj2) {
+            var val1 = obj1.崇川区公安大数据核查情况明细表;
+            var val2 = obj2.崇川区公安大数据核查情况明细表;
+            if (val1 < val2) {
+                return -1;
+            } else if (val1 > val2) {
+                return 1;
+            } else {
+                return 0;
+            }            
+        } 
+        newData.sort(compare)
+        console.log(newData)
         // list.unshift(this.table_title_2)
         // list.unshift(this.table_title)
-        console.log(list)
-        const ws = XLSX.utils.json_to_sheet(list)
+        const ws = XLSX.utils.json_to_sheet(newData,{header:header, skipHeader:true})
         // 新建book
         const wb = XLSX.utils.book_new()
         // 生成xlsx文件(book,sheet数据,sheet命名)
